@@ -1,0 +1,160 @@
+﻿@{
+    ViewData["Title"] = "City Page";
+}
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+<!-- Bootstrap JS ve Popper.js -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-wfSDF2E50YIBJz4ksZ5lFfNGr2cZLJ/cxuLr50ex8A9vfyddhLl5gOC2M5j32k5x" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    TempData.Remove("ErrorMessage");
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div id="success-alert" class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+<!-- Button to trigger modal -->
+<button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#addCityModal">
+    Şehir Ekle
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="addCityModal" tabindex="-1" role="dialog" aria-labelledby="addCityModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCityModalLabel">Şehir Ekle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-controller="City" asp-action="Index" class="form-inline">
+                    <input type="hidden" name="CityId" />
+                    <div class="form-group">
+                        <label for="editCityName">Şehir Adı:</label>
+                        <input type="text" placeholder="Şehir Adını Giriniz." class="form control form-control-sm mr-2" name="CityName" required />
+                    </div>
+
+                    <div class="form-group form-group mr-2">
+                        <label for="regionId">Bölge Seçimi:</label>
+                        <select class="form-control form-control mr-2" id="regionId" name="RegionId" required>
+                            @foreach (var region in ViewBag.RegionList as List<Region>)
+                            {
+                                <option value="@region.RegionId">@region.RegionName</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mt-2">
+                        <button type="submit" class="btn btn-success btn-sm">Kaydet</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@* <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#cityModal">
+    Şehir Ekle
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="cityModal" tabindex="-1" role="dialog" aria-labelledby="cityModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cityModalLabel">Şehir Ekle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-controller="City" asp-action="Index">
+                    <input type="hidden" name="CityId" />
+                    <div class="form-group">
+                        <label for="editCityName">Şehir Adı:</label>
+                        <input type="text" placeholder="Şehir Adını Giriniz." class="form control form-control-sm mr-2" name="CityName" required />
+                    </div>
+                    <div class="mt-2">
+                        <button class="btn btn-success btn-sm" type="submit">Kaydet</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> *@
+
+
+<div class="table-container">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Şehir Adı</th>
+                <th>Bölge Adı</th>
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (ViewBag.CityList != null && ViewBag.CityList is List<City>)
+            {
+                foreach (var item in ViewBag.CityList as List<City>)
+                {
+                    <tr>
+                        <td>
+                            @item.CityName
+                        </td>
+                        <td>
+                            @item.Region.RegionName
+                        </td>
+                        <td>
+                            <a class="btn btn-danger" asp-action="DeleteCity" asp-route-id="@item.CityId">Şehir Sil</a>
+                            <a class="btn btn-warning" asp-action="GetCityInfo" asp-route-id="@item.CityId">Şehir Güncelle</a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="2">Henüz eklenilen bir veri bulunamadı</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+            $("#success-alert").slideUp(500);
+        });
+    });
+</script>
+
+<style>
+    .table-container {
+        border: 2px solid #ddd; /* Çerçeve rengi */
+        padding: 10px; /* Çerçeve içi boşluk */
+        border-radius: 5px; /* Köşe yuvarlama */
+    }
+</style>

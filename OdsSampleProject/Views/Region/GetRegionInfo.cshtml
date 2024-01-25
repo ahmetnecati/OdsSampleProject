@@ -1,0 +1,21 @@
+﻿@model OdsSampleProject.Models.Region
+@{
+    ViewData["Title"] = "GetRegionInfo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Bölge Güncelleme</h1>
+<form asp-action="GetRegionInfo" method="post">
+    <input type="hidden" asp-for="@Model.RegionId" />
+
+
+    <div class="form-group">
+        <label for="editRegionName">Bölge Adı:</label>
+        <input type="text" placeholder="Bölge Adını Giriniz." class="form control form-control-sm mr-2" asp-for="@Model.RegionName" required />
+    </div>
+
+    @* <input required class="form-control form-control-sm" asp-for="@Model.RegionName" /> *@
+    <div class="mt-2">
+        <button class="btn btn-info" type="submit">Bölge Güncelle</button>
+    </div>
+</form>
